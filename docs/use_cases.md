@@ -1,15 +1,19 @@
 # Use Cases
 
-For a variety of projects we need want to analyze a collection of ground-motion
-waveforms from earthquakes. The waveforms may come from a variety of
-sources and potentially in different formats. Ideally, we would want
-all information in a single database; however, waveforms comprised of
-floating point values are difficult to store efficiently in some
-database implementations. A simple alternative is to store the
-metadata in a database for fast queries and store the waveforms in an
-HDF5 file. This limits the number of files to two. Furthermore, we can
-seamlessly compress the waveforms within the HDF5 file to reduce
-storage requirements.
+For a variety of projects we need want to analyze a collection of
+ground-motion waveforms from earthquakes. The waveforms may come from
+a variety of sources and potentially in different formats. While, the
+Center for Engineering Strong Motion Data may some day be able to meet
+some of the needs described here, it will likely take several years or
+longer to upgrade its interfaces and storage.
+
+Ideally, we would want all of the information in a single database;
+however, waveforms comprised of floating point values are difficult to
+store efficiently in some database implementations. A simple
+alternative is to store the metadata in a database for fast queries
+and store the waveforms in an HDF5 file. This limits the total number
+of files to two. Furthermore, we can seamlessly compress the waveforms
+within the HDF5 file to reduce storage requirements.
 
 ## NGAWest2 waveforms
 
