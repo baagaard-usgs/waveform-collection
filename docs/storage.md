@@ -113,4 +113,16 @@ processing records or simulating ground-motions.
 
 ## Waveform HDF5 Layout
 
-**INSERT DIAGRAM HERE**
+The scientific data, waveforms and parametric derived from the
+waveforms such as response spectra, are stored in an HDF5 file. The
+Hiearchical organization of datasets mimics the filesystem while
+keeping datasets in a single file to faciliate
+distribution. Additionally, the datasets can seamleslly be compressed
+and uncompressed and values converted between little and big endian.
+
+<table class="image">
+<caption align="bottom">Hierarchy of waveform and related data in the HDF5
+file. Values in braces are variables. For brevity displacement waveforms are not shown.</caption>
+<tr><td><img src="figs/hdf5_layout.png" alt="HDF5 file hierarchy"/></td></tr>
+</table>
+

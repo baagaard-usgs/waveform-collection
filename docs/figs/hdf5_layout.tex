@@ -1,0 +1,151 @@
+\documentclass[tikz, border=2pt]{standalone}
+\usepackage[none]{hyphenat}
+\usepackage{helvet}
+\renewcommand{\familydefault}{phv}
+
+\begin{document}
+\pagestyle{empty}
+
+\input{palettes/palette_general}
+\input{palettes/palette_usgs}
+
+\usetikzlibrary{positioning,arrows,shapes,calc,shadows.blur}
+
+\tikzstyle{diagram} = [node distance=4em]
+
+\tikzstyle{default} = [rectangle,
+  text width=10em,
+  minimum height=2.0em,
+  text centered,
+  line width=0pt,
+  blur shadow={shadow blur steps=5}]
+
+\tikzstyle{group} = [
+  default,
+  rounded corners=0.5em,
+  top color=ltorange,
+  bottom color=orange]
+
+\tikzstyle{dataset} = [
+  default,
+  top color=ltblue,
+  bottom color=blue]
+
+\newcommand{\variable}[1]{\{{\itshape #1}\}}
+
+\tikzstyle{arrowto} = [line width=2pt, draw=black]
+
+\begin{tikzpicture}[diagram]
+
+  \node (eventid) [group] {\variable{eventid}};
+
+  % Waveforms
+  \node (waveforms) [group, right=of eventid] {waveforms};
+  \draw[arrowto] (eventid.east) -- (waveforms);
+
+  \node (wf-station) [group, right=of waveforms] {\variable{network}.\variable{station}};
+  \node (wf-observed) [group, right=of wf-station] {observed};
+  \draw[arrowto] (waveforms.east) -- (wf-station);
+  \draw[arrowto] (wf-station.east) -- (wf-observed);
+
+  \node (wf-raw) [group, right=of wf-observed] {raw};
+  \node (wf-raw-acc) [dataset, right=of wf-raw] {acc};
+  \draw[arrowto] (wf-observed.east) -- (wf-raw);
+  \draw[arrowto] (wf-raw.east) -- (wf-raw-acc);
+
+  \node (wf-uncorrected) [group, anchor=north] at ($(wf-raw.south)-(0,1em)$) {uncorrected};
+  \node (wf-unc-acc) [dataset, right=of wf-uncorrected] {acc};
+  \draw[arrowto] (wf-observed.east) |- (wf-uncorrected);
+  \draw[arrowto] (wf-uncorrected.east) -- (wf-unc-acc);
+
+  \node (wf-processed) [group, anchor=north] at ($(wf-uncorrected.south)-(0,1em)$) {processed\_\variable{tag}};
+  \node (wf-proc-acc) [dataset, right=of wf-processed] {acc};
+  \node (wf-proc-vel) [dataset, anchor=north] at ($(wf-proc-acc.south)-(0,1em)$) {vel};
+  \draw[arrowto] (wf-observed.east) |- (wf-processed);
+  \draw[arrowto] (wf-processed.east) -- (wf-proc-acc);
+  \draw[arrowto] (wf-processed.east) |- (wf-proc-vel);
+  
+  \node (wf-synthetic) [group, below=of wf-observed, yshift=-6em] {synthetic\_\variable{tag}};
+  \node (wf-syn-uncorrected) [group, right=of wf-synthetic] {uncorrected};
+  \node (wf-syn-unc-acc) [dataset, right=of wf-syn-uncorrected] {acc};
+  \node (wf-syn-unc-vel) [dataset, anchor=north] at ($(wf-syn-unc-acc.south)-(0,1em)$) {vel};
+  \draw[arrowto] (wf-station.east) |- (wf-synthetic);
+  \draw[arrowto] (wf-synthetic.east) -- (wf-syn-uncorrected);
+  \draw[arrowto] (wf-syn-uncorrected.east) -- (wf-syn-unc-acc);
+  \draw[arrowto] (wf-syn-uncorrected.east) |- (wf-syn-unc-vel);
+
+  % Waveforms on ground surface
+  \node (wf-groundsurf) [group, below=of wf-station, yshift=-12em] {ground\_surface};
+  \node (wf-gs-synthetic) [group, right=of wf-groundsurf] {synthetic\_\variable{tag}};
+  \node (wf-gs-syn-vertices) [dataset, right=of wf-gs-synthetic] {vertices};
+  \node (wf-gs-syn-cells) [dataset, anchor=north] at ($(wf-gs-syn-vertices.south)-(0,1em)$) {cells};
+  \node (wf-gs-syn-uncorrected) [group, anchor=north] at ($(wf-gs-syn-cells.south)-(0,1em)$) {uncorrected};
+  \node (wf-gs-syn-unc-acc) [dataset, right=of wf-gs-syn-uncorrected] {acc};
+  \node (wf-gs-syn-unc-vel) [dataset, anchor=north] at ($(wf-gs-syn-unc-acc.south)-(0,1em)$) {vel};
+  \draw[arrowto] (waveforms.east) |- (wf-groundsurf);
+  \draw[arrowto] (wf-groundsurf.east) -- (wf-gs-synthetic);
+  \draw[arrowto] (wf-gs-synthetic.east) -- (wf-gs-syn-vertices);
+  \draw[arrowto] (wf-gs-synthetic.east) |- (wf-gs-syn-cells);
+  \draw[arrowto] (wf-gs-synthetic.east) |- (wf-gs-syn-uncorrected);
+  \draw[arrowto] (wf-gs-syn-uncorrected.east) -- (wf-gs-syn-unc-acc);
+  \draw[arrowto] (wf-gs-syn-uncorrected.east) |- (wf-gs-syn-unc-vel);
+  
+  % Parametric
+  \node (parametric) [group, below of=waveforms, yshift=-26em] {parametric};
+  \node (p-station) [group, right=of parametric] {\variable{network}.\variable{station}};
+  \node (p-observed) [group, right=of p-station] {observed};
+  \node (p-processed) [group, right=of p-observed] {processed\_\variable{tag}};
+  \draw[arrowto] (eventid.east) |- (parametric);
+  \draw[arrowto] (parametric.east) |- (p-station);
+  \draw[arrowto] (p-station.east) |- (p-observed);
+  \draw[arrowto] (p-observed.east) |- (p-processed);
+
+  \node (p-rotd50) [group, right=of p-processed] {rot\_d50};
+  \node (p-rd50-pga) [dataset, right=of p-rotd50] {pga};
+  \node (p-rd50-pgv) [dataset, anchor=north] at ($(p-rd50-pga.south)-(0,1em)$) {pgv};
+  \node (p-rd50-pgd) [dataset, anchor=north] at ($(p-rd50-pgv.south)-(0,1em)$) {pgd};
+  \node (p-rd50-respspectra) [group, anchor=north] at ($(p-rd50-pgd.south)-(0,1em)$) {response\_spectra};
+  \node (p-rd50-rs-acc) [dataset, right=of p-rd50-respspectra] {acc};
+  \node (p-rd50-fourierspectra) [group, anchor=north] at ($(p-rd50-respspectra.south)-(0,1em)$) {fourier\_spectra};
+  \node (p-rd50-fs-acc) [dataset, right=of p-rd50-fourierspectra] {acc};
+  \draw[arrowto] (p-processed.east) -- (p-rotd50);
+  \draw[arrowto] (p-rotd50.east) -- (p-rd50-pga);
+  \draw[arrowto] (p-rotd50.east) |- (p-rd50-pgv);
+  \draw[arrowto] (p-rotd50.east) |- (p-rd50-pgd);
+  \draw[arrowto] (p-rotd50.east) |- (p-rd50-respspectra);
+  \draw[arrowto] (p-rd50-respspectra.east) -- (p-rd50-rs-acc);
+  \draw[arrowto] (p-rotd50.east) |- (p-rd50-fourierspectra);
+  \draw[arrowto] (p-rd50-fourierspectra.east) -- (p-rd50-fs-acc);
+
+  \node (p-rotd100) [group, below=of p-rotd50, yshift=-9em] {rot\_d100};
+  \node (p-rd100-pga) [dataset, right=of p-rotd100] {pga};
+  \node (p-rd100-pgv) [dataset, anchor=north] at ($(p-rd100-pga.south)-(0,1em)$) {pgv};
+  \node (p-rd100-pgd) [dataset, anchor=north] at ($(p-rd100-pgv.south)-(0,1em)$) {pgd};
+  \node (p-rd100-respspectra) [group, anchor=north] at ($(p-rd100-pgd.south)-(0,1em)$) {response\_spectra};
+  \node (p-rd100-rs-acc) [dataset, right=of p-rd100-respspectra] {acc};
+  \node (p-rd100-fourierspectra) [group, anchor=north] at ($(p-rd100-respspectra.south)-(0,1em)$) {fourier\_spectra};
+  \node (p-rd100-fs-acc) [dataset, right=of p-rd100-fourierspectra] {acc};
+  \draw[arrowto] (p-processed.east) |- (p-rotd100);
+  \draw[arrowto] (p-rotd100.east) -- (p-rd100-pga);
+  \draw[arrowto] (p-rotd100.east) |- (p-rd100-pgv);
+  \draw[arrowto] (p-rotd100.east) |- (p-rd100-pgd);
+  \draw[arrowto] (p-rotd100.east) |- (p-rd100-respspectra);
+  \draw[arrowto] (p-rd100-respspectra.east) -- (p-rd100-rs-acc);
+  \draw[arrowto] (p-rotd100.east) |- (p-rd100-fourierspectra);
+  \draw[arrowto] (p-rd100-fourierspectra.east) -- (p-rd100-fs-acc);
+
+  % Rupture model
+  \node (rupmodel) [group, below=of parametric, yshift=-24em] {rupture\_model\_\variable{tag}};
+  \node (rup-geometry) [group, right=of rupmodel] {fault\_geometry};
+  \node (rup-vertices) [dataset, right=of rup-geometry] {vertices};
+  \node (rup-cells) [dataset, anchor=north] at ($(rup-vertices.south)-(0,1em)$) {cells};
+  \node (rup-slip) [dataset, anchor=north] at ($(rup-cells.south)-(0,1em)$) {slip\_time\_history};
+  \draw[arrowto] (eventid.east) |- (rupmodel);
+  \draw[arrowto] (rupmodel.east) -- (rup-geometry);
+  \draw[arrowto] (rup-geometry.east) -- (rup-vertices);
+  \draw[arrowto] (rup-geometry.east) |- (rup-cells);
+  \draw[arrowto] (rup-geometry.east) |- (rup-slip);
+  
+\end{tikzpicture}
+
+\end{document}
