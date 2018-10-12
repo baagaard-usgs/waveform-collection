@@ -1,55 +1,61 @@
 # Use Cases
 
 For a variety of projects we need want to analyze a collection of
-ground-motion waveforms from earthquakes. The waveforms may come from
-a variety of sources and potentially in different formats. While, the
-Center for Engineering Strong Motion Data may some day be able to meet
-some of the needs described here, it will likely take several years or
-longer to upgrade its interfaces and storage.
+ground-motion waveforms and/or parametric data (PGA, PGV, response
+spectra, or Fourier spectra) from earthquakes. The waveforms may come
+from a variety of sources and potentially in different
+formats. Currently, we do not have a unified system for storing,
+archiving, and sharing this type of data, especially for legacy
+events.
 
 Ideally, we would want all of the information in a single database;
 however, waveforms comprised of floating point values are difficult to
 store efficiently in some database implementations. A simple
 alternative is to store the metadata in a database for fast queries
-and store the waveforms in an HDF5 file. This limits the total number
-of files to two. Furthermore, we can seamlessly compress the waveforms
-within the HDF5 file to reduce storage requirements.
+and store the waveforms in an HDF5 file. This keeps the total number
+of files to two and leverages the strengths of a database for metadata
+and HDF5 storage for scientific data. For example, we can seamlessly
+compress the waveforms within the HDF5 file to reduce storage
+requirements.
 
-## NGAWest2 waveforms
+## Internal waveform collections
 
-The NGAWest2 data is very useful for ground-motion studies because it
-includes extensive metadata. Importing the flatfile into a database
-would facilitate analysis of the metadata, make searches faster, and
-allow adding additional metadata, such as mean rupture distance. We
-are working on acquiring the waveforms for internal use; in the
-long-term we should backfill the database with the original
-uncorrected records, so they can be reprocessed using new algorithms
-as they become available.
+Some waveform data are not publicly available or are shared in a
+limited way, e.g., NGAWest2 waveforms. These waveform collections can
+be very useful for ground-motion studies because they can have
+extensive metadata. Compiling these data into a database with
+waveforms and parametric data in an HDF5 file would facilitate their
+use and improve reproducibility, especially if we can backfill the
+database with the original uncorrected records, so they can be
+reprocessed using new algorithms as they become available.
 
-Two immediate uses of these datasets are validation of synthetic
-waveforms being used to test earthquake early warning algorithms and
-experimenting with generating synthetic ground-motion time histories
-using neural networks.
+Two immediate uses of archiving the NGAWest2 data in this form are
+validation of synthetic waveforms being used to test earthquake early
+warning algorithms and experimenting with generating synthetic
+ground-motion time histories using neural networks.
 
-## San Francisco Bay region waveforms for seismic velocity model earthquake development
+## Seismic velocity model development
 
-We want to use earthquake ground motions from moderate earthquakes to
-improve the 3-D seismic velocity model for the greater San Francisco
-Bay region. These could be used in full-waveform inversions and
-assessing the accuracy of the model. We want to be able to easily
-share this data with external collaborators. 
+Development of community seismic velocity models uses earthquake
+ground motions from moderate earthquakes in full-waveform inversions
+and assessment of the accuracy of the models for ground-motion
+prediction. Collecting the ground motions and earthquake source
+parameters facilitates model development. We want to be able to easily
+share this data with external collaborators.
 
-For example, this might include all M3.5-5.0 earthquakes occurring
-within the seismic velocity model since 1999.
+There is an immediate need for this type of waveform collection for
+seismic velocity model development in both southern California and the
+greater San Francisco Bay region.
 
 ## Ground-Motions from Scenario Earthquakes
 
 Ideally, we would like to archive ground-motions from simulations of
 scenario earthquakes in the same way as recorded waveforms. However,
 scenarios require additional metadata about the rupture models and
-simulation parameters. A simple alternative is to leverage this
-metadata and storage scheme for archiving the synthetics. The database
-could serve as a backend to a web interface.
+simulation parameters, which are easily added in this proposed
+scheme. A simple alternative is to leverage this metadata and storage
+scheme for archiving the synthetics. The database could serve as a
+backend to a web interface.
 
 Synthetic ground-motion waveforms data include:
 
@@ -57,11 +63,16 @@ Synthetic ground-motion waveforms data include:
   * 1906 earthquake and variations (different hypocenters and slip
     distributions)
   * Hayward scenarios
+  * 2008 ShakeOut scenario (and alternatives)
   * 2007 Alum Rock earthquake
 
 ## Comprehensive strong-motion data for California
 
 In the long-term the community would benefit from a comprehensive
-collection of strong-motion waveforms for California that is all in
-the same format and processed uniformly. This would greatly facilitate
-application of big-data techniques to seismic hazard analysis.
+collection of strong-motion waveforms for California that is in the
+same format and processed uniformly. This would greatly facilitate
+application of big-data techniques to seismic hazard analysis. This
+may some day be available through the Center for Engineering Strong
+Motion Data Center, but it may take several years to get there. The
+seismic data centers (NCEDC, SCEDC, IRIS DMC) do not provide processed
+records.
