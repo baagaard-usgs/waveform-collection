@@ -120,10 +120,11 @@ keeping datasets in a single file to faciliate
 distribution. Additionally, the datasets can seamleslly be compressed
 and uncompressed and values converted between little and big endian.
 
-<table class="image">
-<caption align="bottom">Hierarchy of waveform and related data in the
+<figure>
+<img width="1200px" src="figs/hdf5_layout.png" alt="HDF5 file
+hierarchy"/>
+<figcaption>Hierarchy of waveform and related data in the
 HDF5 file. Values in braces are variables. For brevity displacement
-waveform datasets are not shown.</caption>
-<tr><td><img width="1200px" src="figs/hdf5_layout.png" alt="HDF5 file
-hierarchy"/></td></tr> </table>
+waveform datasets are not shown.</figcaption>
+</figure>
 
