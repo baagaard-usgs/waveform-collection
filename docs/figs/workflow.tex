@@ -1,0 +1,79 @@
+\documentclass[tikz, border=2pt]{standalone}
+\usepackage[none]{hyphenat}
+\usepackage{helvet}
+\renewcommand{\familydefault}{phv}
+
+\begin{document}
+\pagestyle{empty}
+
+\input{palettes/palette_general}
+\input{palettes/palette_usgs}
+
+\usetikzlibrary{positioning,arrows,shapes,calc,shadows.blur}
+
+\tikzstyle{diagram} = [node distance=8em]
+
+\tikzstyle{default} = [rectangle,
+  text width=8em,
+  minimum height=2.0em,
+  text centered,
+  line width=0pt,
+  blur shadow={shadow blur steps=5}]
+
+\tikzstyle{process} = [
+  default,
+  top color=ltgreen!50!white,
+  bottom color=green!80!white]
+
+\tikzstyle{archive} = [
+  default,
+  rounded corners=1.0em,
+  top color=ltorange,
+  bottom color=orange]
+
+\tikzstyle{io} = [
+default,
+node distance=4em,
+text width=5em,
+  top color=ltyellow,
+  bottom color=yellow]
+
+\tikzstyle{arrow-inout} = [>=latex, line width=2pt, draw=black]
+\tikzstyle{arrow-flow} = [->, >=latex, line width=4pt, draw=blue]
+
+\begin{tikzpicture}[diagram]
+
+  \node (workspace) [archive] {{\bf Workspace} \small{Events, Stations, Waveforms, Auxiliary
+    Data}};
+
+  \node (collector) [process] at (canvas polar cs:angle=180,radius=20em) {Collect Event(s), Stations, Waveforms};
+  \node (station-metrics) [process] at (canvas polar cs:angle=90,radius=10em) {Compute Station Metrics};
+  \node (generate-results) [process] at (canvas polar cs:angle=0,radius=20em) {Generate Compiled Results};
+
+  \node (process-waveforms) [process] at (canvas polar cs:angle=-135,radius=15em) {Process Waveforms};
+  \node (waveform-metrics) [process] at (canvas polar cs:angle=-45,radius=15em) {Compute Waveform Metrics};
+  
+  % Main connections
+  \draw[arrow-flow] (collector) to [bend left] (station-metrics);
+  \draw[arrow-flow] (station-metrics) to [bend left] (generate-results);
+  \draw[arrow-flow] (collector) to [bend right] (process-waveforms);
+  \draw[arrow-flow] (process-waveforms) to [bend right=15] (waveform-metrics);
+  \draw[arrow-flow] (waveform-metrics) to [bend right] (generate-results);
+
+  % Workflow in/out
+  \draw[arrow-inout, <->] (collector) -- (workspace);
+  \draw[arrow-inout, <->] (station-metrics) -- (workspace);
+  \draw[arrow-inout, <-] (generate-results) -- (workspace);
+  \draw[arrow-inout, <->] (process-waveforms) -- (workspace);
+  \draw[arrow-inout, <->] (waveform-metrics) -- (workspace);
+  
+  % Import/export
+  \node (importer) [io] at (canvas polar cs:angle=-160,radius=12em) {Importers};
+  \node (exporter) [io] at  (canvas polar cs:angle=-20,radius=12em) {Exporters};
+
+  \draw[arrow-inout, ->] (importer) -- (workspace);
+  \draw[arrow-inout, <-] (exporter) -- (workspace);
+  
+\end{tikzpicture}
+
+\end{document}
