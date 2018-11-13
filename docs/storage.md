@@ -2,6 +2,11 @@
 
 ## Metadata Database
 
+The metadata will likely include almost everything in the NGAWest2
+flatfile, excluding the spectra values which will be stored in the
+HDF5 file. For efficiency we will use separate tables for events,
+stations, records, etc.
+
 ### event (subset of QuakeML)
 
 Metadata associated with the earthquake.
@@ -35,9 +40,10 @@ Metadata associated with seismic station.
   * elevation_m
   * site_name
   * channels (array of station_channel)
-  * vs30_mps
+  * vs30 (array of vs30)
   * z1.0_m
   * z2.5_m
+  * cosmos_code
 
 #### station_channel
 
@@ -53,6 +59,12 @@ Metadata associated with seismic station.
   * dip_deg
   * sample_rate_hz
   * sensor_description
+
+#### vs30
+
+  * method
+  * vs30_mps
+  * description
 
 ### record
 
@@ -78,6 +90,8 @@ distance, for a given fault model and hypocenter.
   * epicentral_distance_km
   * hypocentral_distance_km
   * mean_rupture_distance_km
+  * joyner_boore_distance_km
+  * site_azimuth_deg
 
 ### rupture_model
 
@@ -89,6 +103,11 @@ Metadata associated with a rupture model.
   * date
   * depth_top_of_rupture_km
   * tag
+  * length_km
+  * width_km
+  * strike_deg
+  * dip_deg
+  * rake_deg
 
 ### synthetic
 

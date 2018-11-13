@@ -47,6 +47,14 @@ There is an immediate need for this type of waveform collection for
 seismic velocity model development in both southern California and the
 greater San Francisco Bay region.
 
+## Ground-Motions for Non-ergodic GMPEs
+
+Moving towards noergodic ground-motion prediction equations requires
+extending ground-motion datasets to smaller magnitude earthquakes to
+increase the number of recordings. Such data will overlap with those
+for seismic velocity model development, but would generally include
+large earthquakes in addition to moderate ones.
+
 ## Ground-Motions from Scenario Earthquakes
 
 Ideally, we would like to archive ground-motions from simulations of
