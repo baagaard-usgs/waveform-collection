@@ -18,6 +18,7 @@
   minimum height=2.0em,
   text centered,
   line width=0pt,
+  anchor=center,
   blur shadow={shadow blur steps=5}]
 
 \tikzstyle{process} = [
@@ -25,7 +26,7 @@
   top color=ltgreen!50!white,
   bottom color=green!80!white]
 
-\tikzstyle{archive} = [
+\tikzstyle{workspace} = [
   default,
   rounded corners=1.0em,
   top color=ltorange,
@@ -43,7 +44,7 @@ text width=5em,
 
 \begin{tikzpicture}[diagram]
 
-  \node (workspace) [archive] {{\bf Workspace} \small{Events, Stations, Waveforms, Auxiliary
+  \node (workspace) [workspace] at (0,0) {{\bf Workspace} \small{Events, Stations, Waveforms, Auxiliary
     Data}};
 
   \node (collector) [process] at (canvas polar cs:angle=180,radius=20em) {Collect Event(s), Stations, Waveforms};
@@ -54,11 +55,11 @@ text width=5em,
   \node (waveform-metrics) [process] at (canvas polar cs:angle=-45,radius=15em) {Compute Waveform Metrics};
   
   % Main connections
-  \draw[arrow-flow] (collector) to [bend left] (station-metrics);
-  \draw[arrow-flow] (station-metrics) to [bend left] (generate-results);
-  \draw[arrow-flow] (collector) to [bend right] (process-waveforms);
-  \draw[arrow-flow] (process-waveforms) to [bend right=15] (waveform-metrics);
-  \draw[arrow-flow] (waveform-metrics) to [bend right] (generate-results);
+  \draw[arrow-flow] (collector) to [out=90, in=180] (station-metrics);
+  \draw[arrow-flow] (station-metrics) to [out=0, in=90] (generate-results);
+  \draw[arrow-flow] (collector) to [out=-90, in=150] (process-waveforms.west);
+  \draw[arrow-flow] (process-waveforms) to (waveform-metrics);
+  \draw[arrow-flow] (waveform-metrics.east) to [out=30, in=-90] (generate-results);
 
   % Workflow in/out
   \draw[arrow-inout, <->] (collector) -- (workspace);
@@ -73,6 +74,7 @@ text width=5em,
 
   \draw[arrow-inout, ->] (importer) -- (workspace);
   \draw[arrow-inout, <-] (exporter) -- (workspace);
+
   
 \end{tikzpicture}
 
