@@ -7,7 +7,7 @@
 \newcounter{offset}
 \setcounter{offset}{202}
 \newcounter{circlevalue}
-\newcommand{\steplabel}[1]{\setcounter{circlevalue}{\numexpr\value{offset}+#1-1}{\color{usgs_navy}\ding{\value{circlevalue}}}}
+\newcommand{\steplabel}[1]{\setcounter{circlevalue}{\numexpr\value{offset}+#1-1}{\color{black}\ding{\value{circlevalue}}}}
 
 \begin{document}
 \pagestyle{empty}
@@ -134,7 +134,16 @@ font={\small},
 
   % Caption
   \node[caption] at ($(workspace.south)+(0,-7.0em)$) {
-    Ground-motion processing workflow. \steplabel{1} Event, station, and raw waveforms can be downloaded from FDSN data centers using obspy web services client. \steplabel{2} Event, station, raw or processed waveforms, and waveform or stations metrics can also be imported from the local filesystem at any stage of the processing. \steplabel{3} Processing waveforms applies baseline corrections, removes noise, etc. \steplabel{4} Compute waveform metrics, such as peak values, response spectra, and Fourier spectra. \steplabel{5} Compute station metrics, such as rupture distance. \steplabel{6} Waveform analysis gets event, station, and processed waveforms from workspace. \steplabel{7} Export event, station, and metrics for ShakeMap production. \steplabel{8} Export event, station, and processed waveforms for GMPE analysis. \steplabel{9} Export event, station, and processed waveform data to CESMD (potential future use case).
+    Ground-motion processing workflow.
+    \steplabel{1}~Event, station, and raw waveforms can be downloaded from FDSN data centers using the obspy web services client.
+    \steplabel{2}~Event, station, raw and processed waveforms, and waveform and stations metrics can also be imported from the local filesystem to incorporate additional data at any stage of the processing.
+    \steplabel{3}~Waveform processing applies baseline corrections, removes noise, integrates to get velocity and displacement, etc.
+    \steplabel{4}~Compute waveform metrics, such as peak values, response spectra, and Fourier spectra.
+    \steplabel{5}~Compute station metrics, such as rupture distance.
+    \steplabel{6}~Waveform analysis obtains event, station, and processed waveforms directly from workspace.
+    \steplabel{7}~Export event, station, and metrics for ShakeMap production.
+    \steplabel{8}~Export event, station, and processed waveforms for GMPE analysis.
+    \steplabel{9}~Export event, station, and processed waveform data to CESMD (potential future use case).
     };
   
 \end{tikzpicture}
