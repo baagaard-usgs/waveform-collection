@@ -11,10 +11,10 @@
 
 \usetikzlibrary{positioning,arrows,shapes,calc,shadows.blur}
 
-\tikzstyle{diagram} = [node distance=4em]
+\tikzstyle{diagram} = [node distance=3em]
 
 \tikzstyle{default} = [rectangle,
-  text width=10em,
+  %minimum text width=10em,
   minimum height=2.0em,
   text centered,
   line width=0pt,
@@ -24,12 +24,17 @@
   default,
   rounded corners=0.5em,
   top color=ltorange,
-  bottom color=orange]
+  bottom color=orange,
+  anchor=west]
 
 \tikzstyle{dataset} = [
   default,
   top color=ltblue,
-  bottom color=blue]
+  bottom color=blue,
+anchor=west]
+
+\tikzstyle{subset} = [
+  xshift=4em]
 
 \newcommand{\variable}[1]{\{{\itshape #1}\}}
 
@@ -37,7 +42,22 @@
 
 \begin{tikzpicture}[diagram]
 
-  \node (eventid) [group] {\variable{eventid}};
+  \node (events) [dataset] {QuakeML (events)};
+
+  \node (waveforms) [group, below=of events] {Waveforms};
+
+  \node (wf-st0) [group, below=of waveforms, subset] {\variable{NET.STA}};
+  \node (st0-metadata) [dataset, below=of wf-st0, subset] {StationXML};
+  \node (wf-st0-data0) [dataset, below of=st0-metadata] {\variable{NET.STA.LOC.CHA\_\_START\_\_END\_\_TAG}};
+  \node (wf-st0-data1) [dataset, below of=wf-st0-data0] {\variable{NET.STA.LOC.CHA\_\_START\_\_END\_\_TAG}};
+
+  \node (wf-st1) [group, below=of waveforms, subset] {\variable{NET.STA}};
+  \node (st1-metadata) [dataset, below=of wf-st0, subset] {StationXML};
+  \node (wf-st1-data0) [dataset, below of=st0-metadata] {\variable{NET.STA.LOC.CHA\_\_START\_\_END\_\_TAG}};
+
+  \node (auxdata) [group, below=of waveforms, yshift=-18em] {AuxiliaryData};
+  
+  \node (eventid) [group, yshift=-5in] {\variable{eventid}};
 
   % Waveforms
   \node (waveforms) [group, right=of eventid] {waveforms};
