@@ -20,6 +20,14 @@
   line width=0pt,
   blur shadow={shadow blur steps=5}]
 
+\tikzstyle{workspace} = [
+default,
+color=white,
+font={\bfseries},
+  top color=ltred,
+  bottom color=red,
+  anchor=west]
+
 \tikzstyle{group} = [
   default,
   rounded corners=0.5em,
@@ -31,10 +39,13 @@
   default,
   top color=ltblue,
   bottom color=blue,
-anchor=west]
+  anchor=west]
 
-\tikzstyle{subset} = [
-  xshift=4em]
+\tikzstyle{subset-right} = [
+  xshift=2em]
+
+\tikzstyle{subset-left} = [
+  xshift=-4em]
 
 \newcommand{\variable}[1]{\{{\itshape #1}\}}
 
@@ -42,67 +53,56 @@ anchor=west]
 
 \begin{tikzpicture}[diagram]
 
-  \node (events) [dataset] {QuakeML (events)};
+  \node (workspace) [workspace] {Workspace (HDF5)};
 
-  \node (waveforms) [group, below=of events] {Waveforms};
-
-  \node (wf-st0) [group, below=of waveforms, subset] {\variable{NET.STA}};
-  \node (st0-metadata) [dataset, below=of wf-st0, subset] {StationXML};
-  \node (wf-st0-data0) [dataset, below of=st0-metadata] {\variable{NET.STA.LOC.CHA\_\_START\_\_END\_\_TAG}};
-  \node (wf-st0-data1) [dataset, below of=wf-st0-data0] {\variable{NET.STA.LOC.CHA\_\_START\_\_END\_\_TAG}};
-
-  \node (wf-st1) [group, below=of waveforms, subset] {\variable{NET.STA}};
-  \node (st1-metadata) [dataset, below=of wf-st0, subset] {StationXML};
-  \node (wf-st1-data0) [dataset, below of=st0-metadata] {\variable{NET.STA.LOC.CHA\_\_START\_\_END\_\_TAG}};
-
-  \node (auxdata) [group, below=of waveforms, yshift=-18em] {AuxiliaryData};
-  
-  \node (eventid) [group, yshift=-5in] {\variable{eventid}};
+  % Events
+  \node (events) [below=of workspace.center, dataset, subset-right] {QuakeML (events)};
+  \draw[arrowto] (workspace.south) |- (events.west);
 
   % Waveforms
-  \node (waveforms) [group, right=of eventid] {waveforms};
-  \draw[arrowto] (eventid.east) -- (waveforms);
+  \node (waveforms) [below=of events.west, group] {Waveforms};
+  \draw[arrowto] (workspace.south) |- (waveforms.west);
 
-  \node (wf-station) [group, right=of waveforms] {\variable{network}.\variable{station}};
-  \node (wf-observed) [group, right=of wf-station] {observed};
-  \draw[arrowto] (waveforms.east) -- (wf-station);
-  \draw[arrowto] (wf-station.east) -- (wf-observed);
-
-  \node (wf-raw) [group, right=of wf-observed] {raw};
-  \node (wf-raw-acc) [dataset, right=of wf-raw] {acc};
-  \draw[arrowto] (wf-observed.east) -- (wf-raw);
-  \draw[arrowto] (wf-raw.east) -- (wf-raw-acc);
-
-  \node (wf-uncorrected) [group, anchor=north] at ($(wf-raw.south)-(0,1em)$) {uncorrected};
-  \node (wf-unc-acc) [dataset, right=of wf-uncorrected] {acc};
-  \draw[arrowto] (wf-observed.east) |- (wf-uncorrected);
-  \draw[arrowto] (wf-uncorrected.east) -- (wf-unc-acc);
-
-  \node (wf-processed) [group, anchor=north] at ($(wf-uncorrected.south)-(0,1em)$) {processed\_\variable{tag}};
-  \node (wf-proc-acc) [dataset, right=of wf-processed] {acc};
-  \node (wf-proc-vel) [dataset, anchor=north] at ($(wf-proc-acc.south)-(0,1em)$) {vel};
-  \draw[arrowto] (wf-observed.east) |- (wf-processed);
-  \draw[arrowto] (wf-processed.east) -- (wf-proc-acc);
-  \draw[arrowto] (wf-processed.east) |- (wf-proc-vel);
+  \node (wf-st0) [below=of waveforms.center, group, subset-right] {\variable{NET.STA}};
+  \node (st0-metadata) [below=of wf-st0.center, dataset, subset-right] {StationXML};
+  \node (wf-st0-data0) [below=of st0-metadata.west, dataset] {\variable{NET.STA.LOC.CHA\_\_START\_\_END\_\_TAG}};
+  \node (wf-st0-data1) [below=of wf-st0-data0.west, dataset] {\variable{NET.STA.LOC.CHA\_\_START\_\_END\_\_TAG}};
+  \draw[arrowto] (waveforms.south) |- (wf-st0.west);
+  \draw[arrowto] (wf-st0.south) |- (st0-metadata.west);
+  \draw[arrowto] (wf-st0.south) |- (wf-st0-data0.west);
+  \draw[arrowto] (wf-st0.south) |- (wf-st0-data1.west);
   
-  \node (wf-synthetic) [group, below=of wf-observed, yshift=-6em] {synthetic\_\variable{tag}};
-  \node (wf-syn-uncorrected) [group, right=of wf-synthetic] {uncorrected};
-  \node (wf-syn-unc-acc) [dataset, right=of wf-syn-uncorrected] {acc};
-  \node (wf-syn-unc-vel) [dataset, anchor=north] at ($(wf-syn-unc-acc.south)-(0,1em)$) {vel};
-  \draw[arrowto] (wf-station.east) |- (wf-synthetic);
-  \draw[arrowto] (wf-synthetic.east) -- (wf-syn-uncorrected);
-  \draw[arrowto] (wf-syn-uncorrected.east) -- (wf-syn-unc-acc);
-  \draw[arrowto] (wf-syn-uncorrected.east) |- (wf-syn-unc-vel);
+  \node (wf-st1) [below=of wf-st0.west, group, yshift=-9em] {\variable{NET.STA}};
+  \node (st1-metadata) [below=of wf-st1.center, dataset, subset-right] {StationXML};
+  \node (wf-st1-data0) [below=of st1-metadata.west, dataset] {\variable{NET.STA.LOC.CHA\_\_START\_\_END\_\_TAG}};
+  \draw[arrowto] (waveforms.south) |- (wf-st1.west);
+  \draw[arrowto] (wf-st1.south) |- (st1-metadata.west);
+  \draw[arrowto] (wf-st1.south) |- (wf-st1-data0.west);
+
+  % Auxiliary data
+  \node (auxdata) [below=of waveforms.west, group, yshift=-21em] {AuxiliaryData};
+  \draw[arrowto] (workspace.south) |- (auxdata.west);
+
+  % Waveform metrics
+  \node (wf-metrics) [below=of auxdata.center, group, subset-right] {WaveformMetrics};
+
+  % Station metrics
+  \node (st-metrics) [below=of wf-metrics.west, group] {StationMetrics};
+
+
+
+
+  % OLD
+  \node (eventid) [group, yshift=-8in] {\variable{eventid}};
 
   % Waveforms on ground surface
-  \node (wf-groundsurf) [group, below=of wf-station, yshift=-12em] {ground\_surface};
+  \node (wf-groundsurf) [group, below=of eventid] {ground\_surface};
   \node (wf-gs-synthetic) [group, right=of wf-groundsurf] {synthetic\_\variable{tag}};
   \node (wf-gs-syn-vertices) [dataset, right=of wf-gs-synthetic] {vertices};
   \node (wf-gs-syn-cells) [dataset, anchor=north] at ($(wf-gs-syn-vertices.south)-(0,1em)$) {cells};
   \node (wf-gs-syn-uncorrected) [group, anchor=north] at ($(wf-gs-syn-cells.south)-(0,1em)$) {uncorrected};
   \node (wf-gs-syn-unc-acc) [dataset, right=of wf-gs-syn-uncorrected] {acc};
   \node (wf-gs-syn-unc-vel) [dataset, anchor=north] at ($(wf-gs-syn-unc-acc.south)-(0,1em)$) {vel};
-  \draw[arrowto] (waveforms.east) |- (wf-groundsurf);
   \draw[arrowto] (wf-groundsurf.east) -- (wf-gs-synthetic);
   \draw[arrowto] (wf-gs-synthetic.east) -- (wf-gs-syn-vertices);
   \draw[arrowto] (wf-gs-synthetic.east) |- (wf-gs-syn-cells);
@@ -111,7 +111,7 @@ anchor=west]
   \draw[arrowto] (wf-gs-syn-uncorrected.east) |- (wf-gs-syn-unc-vel);
   
   % Parametric
-  \node (parametric) [group, below of=waveforms, yshift=-26em] {parametric};
+  \node (parametric) [group, below of=eventid, yshift=-26em] {parametric};
   \node (p-station) [group, right=of parametric] {\variable{network}.\variable{station}};
   \node (p-observed) [group, right=of p-station] {observed};
   \node (p-processed) [group, right=of p-observed] {processed\_\variable{tag}};
